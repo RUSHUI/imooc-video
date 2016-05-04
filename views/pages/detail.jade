@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+    .container
+        .row
+            each item in movie
+                .col-md-7
+                    embed(src="#{item.flash}",allowFullScreen="true",quality="high",width="720",height="600",align="middle",type="application/x-shockwave-flash")
+                .col-md-5
+                    dl.dl-horizontal
+                        dt 电影名字
+                        dd= item.title
+                        dt 导演
+                        dd= item.director
+                        dt 国家
+                        dd= item.country
+                        dt 语言
+                        dd= item.language
+                        dt 上映年份
+                        dd= item.year
+                        dt 简介
+                        dd= item.summary

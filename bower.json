@@ -1,0 +1,25 @@
+{
+  "name": "imooc",
+  "authors": [
+    "rushui <tanpf2012@163.com>"
+  ],
+  "description": "a program for learning node",
+  "main": "app.js",
+  "keywords": [
+    "node",
+    "movie"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "assets/jsLibs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6"
+  }
+}
