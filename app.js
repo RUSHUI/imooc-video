@@ -115,12 +115,14 @@ app.post('/admin/movie/new',function(req, res){
             director:movieObj.director,
             title:movieObj.title,
             country:movieObj.country,
+            _id:+Date.now(),
             language:movieObj.language,
             year:movieObj.year,
             poster:movieObj.poster,
             summary:movieObj.summary,
             flash: movieObj.flash
         })
+        
         _movie.save(function(err, movie){
             if(err){
                 console.log(err);
