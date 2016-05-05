@@ -1,0 +1,8 @@
+# FrontEnd Dependency director
+assets/jsLibs
+
+# server Dependency director
+node_modules
+
+# editor create bak file
+.bak
