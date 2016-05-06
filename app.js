@@ -1,29 +1,63 @@
-var express = require('express')
-var path = require('path')
-var mongoose = require('mongoose')
+var express = require('express')//minimalist web framework package
+var path = require('path')      //This is an exact copy of the NodeJS ’path’ module published to the NPM registry.
+var mongoose = require('mongoose')//Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment.
 var _ = require('underscore')
-var Movies = require('./models/movie')
+var Movie = require('./models/movie')
+var bodyParser = require('body-parser');//URL-encoded form body parser. code: bodyParser.urlencoded(options)
+// for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }))
+
+//more info to http://expressjs.com/en/4x/api.html#app.settings.table
+
+
+/**
+* process.env#
+* An object containing the user environment.
+    An example of this object looks like:
+
+    { TERM: 'xterm-256color',
+      SHELL: '/usr/local/bin/bash',
+      USER: 'maciej',
+      PATH: '~/.bin/:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin',
+      PWD: '/Users/maciej',
+      EDITOR: 'vim',
+      SHLVL: '1',
+      HOME: '/Users/maciej',
+      LOGNAME: 'maciej',
+      _: '/usr/local/bin/node'
+    }
+*/
+//console.log(process.env.PORT);//undefined
 var port = process.env.PORT || 3000
+
+//Creates an Express application 'app'
 var app = express()
 
+//connect imooc db
 mongoose.connect('mongodb://localhost/imooc')
 
-var bodyParser = require('body-parser');
-
+// for parsing application/json
 app.use(bodyParser.json())
+
+//设置view映射路径   A directory or an array of directories for the application's views.
 app.set('views', "./views/pages/")
+
+//The default engine extension to use when omitted.
 app.set('view engine', 'jade')
-// app.use(bodyParser())
-app.use(bodyParser.urlencoded({ extended: true }))
+
+//Mounts the specified middleware function or functions at the specified path. If path is not specified, it defaults to “/”.
 app.use("/static", express.static(path.join(__dirname, 'bower_components')))
 app.use("/static", express.static(path.join(__dirname, 'assets')))
+
+//Binds and listens for connections on the specified host and port. This method is identical to Node’s http.Server.listen().
 app.listen(port)
 
-console.log("imooc started on port " + port)
+console.log("node server started on port " + port)
 
-//index page
+//Routes HTTP GET requests to the specified path with the specified callback functions.
+//index page rout
 app.get('/', function(req, res) {
-    Movies.fetch(function(err, movies){
+    Movie.fetch(function(err, movies){
         console.log(movies);
         if(err){
             console.log(err);
@@ -35,12 +69,12 @@ app.get('/', function(req, res) {
     })
 })
 
-
 //detail page
 app.get('/movie/:id', function(req, res) {
     var id = req.params.id
-
-    Movies.findById(id,function(err,movie){
+    //schema movie object custom method
+    // 根据记录id，查询一条记录
+    Movie.findById(id,function(err,movie){
         if(err){
             console.log(err);
         }else{
@@ -54,6 +88,7 @@ app.get('/movie/:id', function(req, res) {
 
 //admin page
 app.get('/admin/movie', function(req, res) {
+    //express framework callback res's method render view tpl
     res.render('admin', {
         title: 'imooc 后台录入页',
         movie: {
@@ -72,7 +107,9 @@ app.get('/admin/movie', function(req, res) {
 
 //list page
 app.get('/admin/list', function(req, res) {
-    Movies.fetch(function(err, movies){
+    //schema movie's method
+    //查询该数据库下所有记录
+    Movie.fetch(function(err, movies){
         if(err){
             console.log(err);
         }else{
@@ -95,7 +132,7 @@ app.post('/admin/movie/new',function(req, res){
     var _movie
 
     if(id !== 'undefined' ){
-        Movies.findById(id, function(err, movie){
+        Movie.findById(id, function(err, movie){
             if(err){
                 console.log(err);
             }else{
@@ -111,7 +148,7 @@ app.post('/admin/movie/new',function(req, res){
         })
     }
     else{
-        _movie = new Movies({
+        _movie = new Movie({
             director:movieObj.director,
             title:movieObj.title,
             country:movieObj.country,
@@ -122,7 +159,7 @@ app.post('/admin/movie/new',function(req, res){
             summary:movieObj.summary,
             flash: movieObj.flash
         })
-        
+
         _movie.save(function(err, movie){
             if(err){
                 console.log(err);
@@ -137,7 +174,7 @@ app.get('/admin/update/:id',function(req, res){
     var id = req.params.id
 
     if(id){
-        Movies.findById(id, function(err, movie){
+        Movie.findById(id, function(err, movie){
             if(err){
                 console.log(err);
             }else{

@@ -1,5 +1,5 @@
 var mongoose = require('mongoose')
-
+    //define schema MovieSchema
 var MovieSchema = new mongoose.Schema({
     director: String,
     title:String,
@@ -21,7 +21,7 @@ var MovieSchema = new mongoose.Schema({
         }
     }
 })
-
+//每次保存前都会做的事情
 MovieSchema.pre('save',function(next){
     if(this.isNew){
         this.meta.createdAt = this.meta.updatedAt = Date.now()
@@ -31,7 +31,7 @@ MovieSchema.pre('save',function(next){
     }
     next()
 })
-
+//schema的静态方法
 MovieSchema.statics = {
     fetch: function( cb ){
         return this
