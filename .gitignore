@@ -1,5 +1,5 @@
 # FrontEnd Dependency director
-assets/jsLibs
+public/jsLibs
 
 # server Dependency director
 node_modules

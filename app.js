@@ -44,8 +44,7 @@ app.set('views', "./views/pages/")
 app.set('view engine', 'jade')
 
 //Mounts the specified middleware function or functions at the specified path. If path is not specified, it defaults to “/”.
-app.use("/static", express.static(path.join(__dirname, 'bower_components')))
-app.use("/static", express.static(path.join(__dirname, 'assets')))
+app.use("/static", express.static(path.join(__dirname, 'public')))
 
 //Binds and listens for connections on the specified host and port. This method is identical to Node’s http.Server.listen().
 app.listen(port)
@@ -211,6 +210,23 @@ app.post('/admin/movie/new',function(req, res){
         })
     }
 })
+
+
+//admin list remove
+app.delete('/admin/list',function(req,res){
+    var id = req.query.id
+    if(id){
+        Movie.remove({_id:id},function(err,movie){
+            if(err){
+                console.log(err)
+            }
+            else{
+                res.json({success:1})
+            }
+        })
+    }
+})
+
 //admin update movie
 app.get('/admin/update/:id',function(req, res){
     var id = req.params.id
