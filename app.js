@@ -1,14 +1,10 @@
 var express = require('express')//minimalist web framework package
-var path = require('path')      //This is an exact copy of the NodeJS ’path’ module published to the NPM registry.
 var mongoose = require('mongoose')//Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment.
-var _ = require('underscore')
 var Movie = require('./models/movie')
+
+var path = require('path')      //This is an exact copy of the NodeJS ’path’ module published to the NPM registry.
+var _ = require('underscore')
 var bodyParser = require('body-parser');//URL-encoded form body parser. code: bodyParser.urlencoded(options)
-// for parsing application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }))
-
-//more info to http://expressjs.com/en/4x/api.html#app.settings.table
-
 
 /**
 * process.env#
@@ -36,9 +32,11 @@ var app = express()
 //connect imooc db
 mongoose.connect('mongodb://localhost/imooc')
 
+//more info to http://expressjs.com/en/4x/api.html#app.settings.table
 // for parsing application/json
 app.use(bodyParser.json())
-
+// for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }))
 //设置view映射路径   A directory or an array of directories for the application's views.
 app.set('views', "./views/pages/")
 
@@ -59,13 +57,20 @@ console.log("node server started on port " + port)
 app.get('/', function(req, res) {
     Movie.fetch(function(err, movies){
         console.log(movies);
+        // if(err){
+        //     console.log(err);
+        // }else{
+        //     res.render('index', {
+        //         movies: movies
+        //     })
+        // }
+        console.log("index - fetch method"+movies);
         if(err){
             console.log(err);
-        }else{
-            res.render('index', {
-                movies: movies
-            })
         }
+        res.render('index', {
+            movies: movies
+        })
     })
 })
 
@@ -75,14 +80,23 @@ app.get('/movie/:id', function(req, res) {
     //schema movie object custom method
     // 根据记录id，查询一条记录
     Movie.findById(id,function(err,movie){
+        // if(err){
+        //     console.log(err);
+        // }else{
+        //     res.render('detail', {
+        //         title: 'imooc 详情页',
+        //         movie: movie
+        //     })
+        // }
+        console.log("detail - findById method"+movie);
+
         if(err){
             console.log(err);
-        }else{
-            res.render('detail', {
-                title: 'imooc 详情页',
-                movie: movie
-            })
         }
+        res.render('detail', {
+            title: 'imooc 详情页',
+            movie: movie
+        })
     })
 })
 
@@ -110,14 +124,21 @@ app.get('/admin/list', function(req, res) {
     //schema movie's method
     //查询该数据库下所有记录
     Movie.fetch(function(err, movies){
+        // if(err){
+        //     console.log(err);
+        // }else{
+        //     res.render('list', {
+        //         title: 'imooc 列表页',
+        //         movies: movies
+        //     })
+        // }
         if(err){
             console.log(err);
-        }else{
-            res.render('list', {
-                title: 'imooc 列表页',
-                movies: movies
-            })
         }
+        res.render('list', {
+            title: 'imooc 列表页',
+            movies: movies
+        })
     })
 
 })
@@ -132,19 +153,35 @@ app.post('/admin/movie/new',function(req, res){
     var _movie
 
     if(id !== 'undefined' ){
+        console.log("admin post movie id"+ id);
         Movie.findById(id, function(err, movie){
+            // if(err){
+            //     console.log(err);
+            // }else{
+            //     _movie = _.extend(movie,movieObj)
+            //     _movie.save(function(err, movie){
+            //         if(err){
+            //             console.log(err);
+            //         }else{
+            //             res.redirect('/movie/' + movie._id)
+            //         }
+            //     })
+            // }
             if(err){
                 console.log(err);
-            }else{
-                _movie = _.extend(movie,movieObj)
-                _movie.save(function(err, movie){
-                    if(err){
-                        console.log(err);
-                    }else{
-                        res.redirect('/movie/' + movie._id)
-                    }
-                })
             }
+            _movie = _.extend(movie,movieObj)
+            _movie.save(function(err, movie){
+                // if(err){
+                //     console.log(err);
+                // }else{
+                //     res.redirect('/movie/' + movie._id)
+                // }
+                if(err){
+                    console.log(err);
+                }
+                res.redirect('/movie/' + movie._id)
+            })
         })
     }
     else{
@@ -152,7 +189,7 @@ app.post('/admin/movie/new',function(req, res){
             director:movieObj.director,
             title:movieObj.title,
             country:movieObj.country,
-            _id:+Date.now(),
+            //_id:+Date.now()+'',
             language:movieObj.language,
             year:movieObj.year,
             poster:movieObj.poster,
@@ -161,11 +198,16 @@ app.post('/admin/movie/new',function(req, res){
         })
 
         _movie.save(function(err, movie){
+            // if(err){
+            //     console.log(err);
+            // }else{
+            //     res.redirect('/movie/' + movie._id)
+            // }
+            console.log("new submit movie "+movie)
             if(err){
                 console.log(err);
-            }else{
-                res.redirect('/movie/' + movie._id)
             }
+            res.redirect('/movie/' + movie._id)
         })
     }
 })
@@ -175,14 +217,21 @@ app.get('/admin/update/:id',function(req, res){
 
     if(id){
         Movie.findById(id, function(err, movie){
+            // if(err){
+            //     console.log(err);
+            // }else{
+            //     res.render('admin',{
+            //         title:"imooc 后台更新页",
+            //         movie:movie
+            //     })
+            // }
             if(err){
                 console.log(err);
-            }else{
-                res.render('admin',{
-                    title:"imooc 后台更新页",
-                    movie:movie
-                })
             }
+            res.render('admin',{
+                title:"imooc 后台更新页",
+                movie:movie
+            })
         })
     }
     // res.render('update',{

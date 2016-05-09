@@ -6,7 +6,6 @@ var MovieSchema = new mongoose.Schema({
     language:String,
     country:String,
     summary:String,
-    _id:Number,
     flash:String,
     poster:String,
     year:Number,
@@ -41,7 +40,7 @@ MovieSchema.statics = {
     },
     findById: function( id, cb ){
         return this
-            .findOne({_id:id})
+            .findOne({"_id":id})
             .exec(cb)
     }
 }
