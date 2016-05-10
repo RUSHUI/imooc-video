@@ -25,7 +25,7 @@ git checkout First
 
 如有疑问，欢迎联系我一起学习。**mailto**:tanpf2018@163.com
 或者[github][4]上面fork me
-本文编辑使用作业部落的[cmd_markdown][5]编辑器编辑
+<small>本文编辑使用作业部落的[cmd_markdown][5]编辑器编辑</small>
 
 
  
